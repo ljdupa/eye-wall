@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Eye Wall</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: black;
+      }
+
+      #container3D {
+        width: 100vw;
+        height: 100vh;
+      }
+
+      /* ===== CLICK TO ENTER ===== */
+      #enterScreen {
+        position: fixed;
+        inset: 0;
+        background: black;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: opacity 1.2s ease;
+      }
+
+      #enterScreen.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #enterButton {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.25em;
+  cursor: pointer;
+
+  /* subtle motion */
+  animation:
+    flicker 3s infinite,
+    breathe 6s ease-in-out infinite;
+
+  transform-origin: center;
+}
+
+@keyframes breathe {
+  0% {
+    transform: scale(0.97);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.97);
+    opacity: 0.55;
+  }
+}
+
+
+
+      @keyframes flicker {
+        0% { opacity: 1; }
+        50% { opacity: 0.85; }
+        100% { opacity: 1; }
+      }
+
+      /* ===== MUTE BUTTON ===== */
+      #muteButton {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 9999;
+        background: black;
+        color: white;
+        border: 1px solid #444;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+    </style>
+
+    <!-- YouTube IFrame API (MUST be global, NOT module) -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+  </head>
+
+  <body>
+    <!-- CLICK TO ENTER OVERLAY -->
+    <div id="enterScreen">
+      <button id="enterButton">CLICK TO ENTER THE CHANNEL</button>
+    </div>
+
+    <!-- Three.js canvas -->
+    <div id="container3D"></div>
+
+    <!-- Hidden YouTube audio player -->
+    <div id="yt-player" style="display:none;"></div>
+
+    <!-- Mute toggle -->
+    <button id="muteButton">🔇 Mute</button>
+
+    <!-- Your Three.js app -->
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
