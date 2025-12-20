@@ -21,7 +21,7 @@
         height: 100vh;
       }
 
-      /* ===== CLICK TO ENTER ===== */
+
       #enterScreen {
         position: fixed;
         inset: 0;
@@ -47,7 +47,6 @@
   letter-spacing: 0.25em;
   cursor: pointer;
 
-  /* subtle motion */
   animation:
     flicker 3s infinite,
     breathe 6s ease-in-out infinite;
@@ -80,7 +79,7 @@
         100% { opacity: 1; }
       }
 
-      /* ===== MUTE BUTTON ===== */
+      <!-- Mute -->
       #muteButton {
         position: fixed;
         top: 16px;
@@ -98,6 +97,7 @@
     <!-- YouTube IFrame API (MUST be global, NOT module) -->
     <script src="https://www.youtube.com/iframe_api"></script>
   </head>
+  
 
   <body>
     <!-- CLICK TO ENTER OVERLAY -->
