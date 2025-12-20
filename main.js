@@ -179,10 +179,6 @@ fileInput.onchange = (e) => {
 };
 
 // CLICK TO ENTER
-document.getElementById("enterButton").addEventListener("click", () => {
-  if (hasEntered) return;
-  hasEntered = true;
-
   document.getElementById("enterScreen").classList.add("hidden");
 
   const ctx = listener.context;
@@ -203,6 +199,40 @@ document.getElementById("enterButton").addEventListener("click", () => {
     noiseAudio.gain.gain.linearRampToValueAtTime(0.001, t + 1.2);
   });
 });
+
+let audioStarted = false;
+
+function startAudioOnce() {
+  if (audioStarted) return;
+  audioStarted = true;
+
+  const ctx = listener.context;
+  const t = ctx.currentTime;
+
+  ctx.resume().then(() => {
+    // Ambience
+    ambience.play();
+    ambienceGain.gain.setValueAtTime(0, t);
+    ambienceGain.gain.linearRampToValueAtTime(0.18, t + 4);
+
+    // Static noise
+    noiseAudio.setBuffer(createWhiteNoiseBuffer());
+    noiseAudio.setLoop(true);
+    noiseAudio.play();
+    noiseAudio.gain.gain.setValueAtTime(0, t);
+    noiseAudio.gain.gain.linearRampToValueAtTime(0.001, t + 1);
+  });
+
+  window.removeEventListener("mousemove", startAudioOnce);
+  window.removeEventListener("mousedown", startAudioOnce);
+  window.removeEventListener("keydown", startAudioOnce);
+}
+
+// start audio on first interaction
+window.addEventListener("mousemove", startAudioOnce);
+window.addEventListener("mousedown", startAudioOnce);
+window.addEventListener("keydown", startAudioOnce);
+
 
 // MUTE
 document.getElementById("muteButton").onclick = () => {
@@ -244,4 +274,5 @@ function animate() {
 }
 
 animate();
+
 
