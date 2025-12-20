@@ -8,7 +8,7 @@ import { ShaderPass } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/p
 import { VignetteShader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/shaders/VignetteShader.js";
 import GUI from "https://cdn.skypack.dev/lil-gui";
 
-// GLOBALS
+/* ================= GLOBALS ================= */
 let flickerTime = 0;
 let mixers = [];
 const clock = new THREE.Clock();
@@ -20,11 +20,11 @@ let isMuted = false;
 const mouse = new THREE.Vector2();
 const cameraTarget = new THREE.Vector3();
 
-// SCENE
+/* ================= SCENE ================= */
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#000");
 
-// CAMERA
+/* ================= CAMERA ================= */
 const camera = new THREE.PerspectiveCamera(
   55,
   window.innerWidth / window.innerHeight,
@@ -33,7 +33,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 0, 20);
 
-// RENDERER
+/* ================= RENDERER ================= */
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -44,7 +44,7 @@ renderer.toneMappingExposure = 7;
 renderer.shadowMap.enabled = true;
 document.getElementById("container3D").appendChild(renderer.domElement);
 
-// HDRI
+/* ================= HDRI ================= */
 new RGBELoader()
   .setPath("https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/")
   .load("studio_small_03_1k.hdr", (hdr) => {
@@ -53,7 +53,7 @@ new RGBELoader()
     scene.environmentIntensity = 0.15;
   });
 
-// POST FX
+/* ================= POST FX ================= */
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
@@ -65,7 +65,7 @@ vignettePass.uniforms.offset.value = 1.25;
 vignettePass.uniforms.darkness.value = 2.1;
 composer.addPass(vignettePass);
 
-// LIGHTING
+/* ================= LIGHTING ================= */
 const keyLight = new THREE.DirectionalLight(0xffffff, 4.8);
 keyLight.position.set(2, -6, 5);
 scene.add(keyLight);
@@ -78,7 +78,7 @@ const rimLight = new THREE.DirectionalLight(0xffffff, 2.2);
 rimLight.position.set(0, 8, -10);
 scene.add(rimLight);
 
-// AUDIO
+/* ================= AUDIO ================= */
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
@@ -106,7 +106,7 @@ audioLoader.load("./audio/horror-ambience.mp3", (buffer) => {
   ambience.setLoop(true);
 });
 
-//MODEL
+/* ================= MODEL ================= */
 const loader = new GLTFLoader();
 loader.load("./models/eye.glb", (gltf) => {
   const eye = gltf.scene;
@@ -135,7 +135,7 @@ loader.load("./models/eye.glb", (gltf) => {
   }
 });
 
-// IMAGE COLOR
+/* ================= IMAGE COLOR ================= */
 function extractColorsFromImage(img, count = 12) {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d");
@@ -156,7 +156,7 @@ function applyRandomIrisColors(palette) {
   });
 }
 
-// GUI
+/* ================= GUI ================= */
 const gui = new GUI();
 const controls = {
   uploadImage: () => fileInput.click(),
@@ -178,7 +178,11 @@ fileInput.onchange = (e) => {
   img.src = URL.createObjectURL(e.target.files[0]);
 };
 
-// CLICK TO ENTER
+/* ================= CLICK TO ENTER ================= */
+document.getElementById("enterButton").addEventListener("click", () => {
+  if (hasEntered) return;
+  hasEntered = true;
+
   document.getElementById("enterScreen").classList.add("hidden");
 
   const ctx = listener.context;
@@ -200,48 +204,14 @@ fileInput.onchange = (e) => {
   });
 });
 
-let audioStarted = false;
-
-function startAudioOnce() {
-  if (audioStarted) return;
-  audioStarted = true;
-
-  const ctx = listener.context;
-  const t = ctx.currentTime;
-
-  ctx.resume().then(() => {
-    // Ambience
-    ambience.play();
-    ambienceGain.gain.setValueAtTime(0, t);
-    ambienceGain.gain.linearRampToValueAtTime(0.18, t + 4);
-
-    // Static noise
-    noiseAudio.setBuffer(createWhiteNoiseBuffer());
-    noiseAudio.setLoop(true);
-    noiseAudio.play();
-    noiseAudio.gain.gain.setValueAtTime(0, t);
-    noiseAudio.gain.gain.linearRampToValueAtTime(0.001, t + 1);
-  });
-
-  window.removeEventListener("mousemove", startAudioOnce);
-  window.removeEventListener("mousedown", startAudioOnce);
-  window.removeEventListener("keydown", startAudioOnce);
-}
-
-// start audio on first interaction
-window.addEventListener("mousemove", startAudioOnce);
-window.addEventListener("mousedown", startAudioOnce);
-window.addEventListener("keydown", startAudioOnce);
-
-
-// MUTE
+/* ================= MUTE ================= */
 document.getElementById("muteButton").onclick = () => {
   isMuted = !isMuted;
   ambienceGain.gain.value = isMuted ? 0 : 0.18;
   noiseAudio.gain.gain.value = isMuted ? 0 : 0.001;
 };
 
-// EVENTS
+/* ================= EVENTS ================= */
 window.onmousemove = (e) => {
   mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -254,7 +224,7 @@ window.onresize = () => {
   composer.setSize(window.innerWidth, window.innerHeight);
 };
 
-// LOOP
+/* ================= LOOP ================= */
 function animate() {
   requestAnimationFrame(animate);
 
@@ -274,5 +244,3 @@ function animate() {
 }
 
 animate();
-
-
