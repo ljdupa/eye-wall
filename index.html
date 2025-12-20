@@ -21,7 +21,7 @@
         height: 100vh;
       }
 
- <!-- CLICK TO ENTER -->
+      /* ===== CLICK TO ENTER ===== */
       #enterScreen {
         position: fixed;
         inset: 0;
@@ -47,7 +47,7 @@
   letter-spacing: 0.25em;
   cursor: pointer;
 
- <!-- Subtle motion -->
+  /* subtle motion */
   animation:
     flicker 3s infinite,
     breathe 6s ease-in-out infinite;
@@ -80,7 +80,7 @@
         100% { opacity: 1; }
       }
 
-
+      /* ===== MUTE BUTTON ===== */
       #muteButton {
         position: fixed;
         top: 16px;
@@ -95,15 +95,14 @@
       }
     </style>
 
-    <!-- Youtube Frame API  -->
-
+    <!-- YouTube IFrame API (MUST be global, NOT module) -->
     <script src="https://www.youtube.com/iframe_api"></script>
   </head>
 
   <body>
     <!-- CLICK TO ENTER OVERLAY -->
     <div id="enterScreen">
-      <button id="enterButton">CLICK TO ENTER THE CHANNEL</button>
+      <button id="enterButton">CLICK TO ENTER THE REALM</button>
     </div>
 
     <!-- Three.js canvas -->
@@ -115,7 +114,7 @@
     <!-- Mute toggle -->
     <button id="muteButton">🔇 Mute</button>
 
+    <!-- Your Three.js app -->
     <script type="module" src="./main.js"></script>
   </body>
 </html>
-
