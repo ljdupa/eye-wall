@@ -1,13 +1,13 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.129.0";
-import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
-import { RGBELoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/RGBELoader.js";
-import { EffectComposer } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/RenderPass.js";
-import { FilmPass } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/FilmPass.js";
-import { ShaderPass } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/ShaderPass.js";
-import { VignetteShader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/shaders/VignetteShader.js";
+import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
+import { GLTFLoader } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/loaders/GLTFLoader.js";
+import { RGBELoader } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/loaders/RGBELoader.js";
+import { EffectComposer } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/RenderPass.js";
+import { FilmPass } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/FilmPass.js";
+import { ShaderPass } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/ShaderPass.js";
+import { VignetteShader } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/shaders/VignetteShader.js";
 import GUI from "https://cdn.skypack.dev/lil-gui";
-alert("🚨 NEW main.js IS RUNNING");
+
 
 
 /* ================= GLOBALS ================= */
@@ -187,6 +187,7 @@ function animate() {
 }
 
 animate();
+
 
 
 
