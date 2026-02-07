@@ -1,12 +1,11 @@
-import * as THREE from "https://unpkg.com/three@0.129.0/build/three.module.js";
-import { GLTFLoader } from "https://unpkg.com/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
-import { RGBELoader } from "https://unpkg.com/three@0.129.0/examples/jsm/loaders/RGBELoader.js";
-import { EffectComposer } from "https://unpkg.com/three@0.129.0/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "https://unpkg.com/three@0.129.0/examples/jsm/postprocessing/RenderPass.js";
-import { FilmPass } from "https://unpkg.com/three@0.129.0/examples/jsm/postprocessing/FilmPass.js";
-import { ShaderPass } from "https://unpkg.com/three@0.129.0/examples/jsm/postprocessing/ShaderPass.js";
-import { VignetteShader } from "https://unpkg.com/three@0.129.0/examples/jsm/shaders/VignetteShader.js";
-import GUI from "https://unpkg.com/lil-gui@0.18/dist/lil-gui.esm.js";
+import * as THREE from "./three/build/three.module.js";
+import { GLTFLoader } from "./three/examples/jsm/loaders/GLTFLoader.js";
+import { RGBELoader } from "./three/examples/jsm/loaders/RGBELoader.js";
+import { EffectComposer } from "./three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "./three/examples/jsm/postprocessing/RenderPass.js";
+import { FilmPass } from "./three/examples/jsm/postprocessing/FilmPass.js";
+import { ShaderPass } from "./three/examples/jsm/postprocessing/ShaderPass.js";
+import { VignetteShader } from "./three/examples/jsm/shaders/VignetteShader.js";
 alert("🚨 NEW main.js IS RUNNING");
 
 
@@ -187,5 +186,6 @@ function animate() {
 }
 
 animate();
+
 
 
