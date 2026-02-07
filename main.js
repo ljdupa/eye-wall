@@ -87,14 +87,13 @@ scene.add(rimLight);
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
+// Ambience
 const ambience = new THREE.Audio(listener);
-const noiseAudio = new THREE.Audio(listener);
+const ambienceGain = ambience.gain;
+ambienceGain.gain.value = 0;
 
-const audioLoader = new THREE.AudioLoader();
-audioLoader.load("./audio/horror-ambience.mp3", (buffer) => {
-  ambience.setBuffer(buffer);
-  ambience.setLoop(true);
-});
+// Static noise
+const noiseAudio = new THREE.Audio(listener);
 
 function createWhiteNoiseBuffer(duration = 2) {
   const ctx = listener.context;
@@ -105,6 +104,12 @@ function createWhiteNoiseBuffer(duration = 2) {
   }
   return buffer;
 }
+
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load("./audio/horror-ambience.mp3", (buffer) => {
+  ambience.setBuffer(buffer);
+  ambience.setLoop(true);
+});
 
 /* ================= MODEL ================= */
 const loader = new GLTFLoader();
@@ -126,7 +131,7 @@ loader.load("./models/eye.glb", (gltf) => {
   }
 });
 
-/* ================= CLICK TO ENTER (FIXED) ================= */
+/* ================= CLICK TO ENTER ================= */
 document.getElementById("enterButton").addEventListener("click", () => {
   if (hasEntered) return;
   hasEntered = true;
@@ -134,19 +139,22 @@ document.getElementById("enterButton").addEventListener("click", () => {
   document.getElementById("enterScreen").classList.add("hidden");
 
   const ctx = listener.context;
-  ctx.resume(); // MUST be synchronous
-
   const t = ctx.currentTime;
 
-  ambience.play();
-  ambience.gain.gain.setValueAtTime(0, t);
-  ambience.gain.gain.linearRampToValueAtTime(0.18, t + 5);
+  ctx.resume().then(() => {
+    // Ambience
+    ambience.play();
+    ambienceGain.gain.setValueAtTime(0, t);
+    ambienceGain.gain.linearRampToValueAtTime(0.18, t + 5);
 
-  noiseAudio.setBuffer(createWhiteNoiseBuffer());
-  noiseAudio.setLoop(true);
-  noiseAudio.play();
-  noiseAudio.gain.gain.setValueAtTime(0, t);
-  noiseAudio.gain.gain.linearRampToValueAtTime(0.001, t + 1);
+    // Static (NO POP)
+    noiseAudio.setBuffer(createWhiteNoiseBuffer());
+    noiseAudio.setLoop(true);
+    noiseAudio.play();
+    noiseAudio.gain.gain.setValueAtTime(0, t);
+    noiseAudio.gain.gain.linearRampToValueAtTime(0.0005, t + 0.4);
+    noiseAudio.gain.gain.linearRampToValueAtTime(0.001, t + 1.2);
+  });
 });
 
 /* ================= MUTE ================= */
@@ -189,6 +197,7 @@ function animate() {
 }
 
 animate();
+
 
 
 
