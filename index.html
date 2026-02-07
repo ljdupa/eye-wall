@@ -21,7 +21,7 @@
         height: 100vh;
       }
 
-      /* ===== CLICK TO ENTER ===== */
+      /* ENTER SCREEN */
       #enterScreen {
         position: fixed;
         inset: 0;
@@ -40,39 +40,20 @@
       }
 
       #enterButton {
-  background: none;
-  border: none;
-  color: #e0e0e0;
-  font-size: clamp(2rem, 6vw, 4rem);
-  letter-spacing: 0.25em;
-  cursor: pointer;
+        background: none;
+        border: none;
+        color: #e0e0e0;
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: 0.25em;
+        cursor: pointer;
+        animation: flicker 3s infinite, breathe 6s ease-in-out infinite;
+      }
 
-  /* subtle motion */
-  animation:
-    flicker 3s infinite,
-    breathe 6s ease-in-out infinite;
-
-  transform-origin: center;
-}
-
-@keyframes breathe {
-  0% {
-    transform: scale(0.97);
-    opacity: 0.55;
-  }
-
-  50% {
-    transform: scale(1.04);
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(0.97);
-    opacity: 0.55;
-  }
-}
-
-
+      @keyframes breathe {
+        0% { transform: scale(0.97); opacity: 0.55; }
+        50% { transform: scale(1.04); opacity: 1; }
+        100% { transform: scale(0.97); opacity: 0.55; }
+      }
 
       @keyframes flicker {
         0% { opacity: 1; }
@@ -80,7 +61,26 @@
         100% { opacity: 1; }
       }
 
-      /* ===== MUTE BUTTON ===== */
+      /* UPLOAD PANEL */
+      #uploadPanel {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9000;
+        background: rgba(0, 0, 0, 0.75);
+        border: 1px solid #444;
+        padding: 12px 16px;
+        color: #e0e0e0;
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+
+      #uploadPanel input {
+        color: white;
+      }
+
+      /* MUTE */
       #muteButton {
         position: fixed;
         top: 16px;
@@ -94,27 +94,38 @@
         font-size: 14px;
       }
     </style>
-
-    <!-- YouTube IFrame API (MUST be global, NOT module) -->
-    <script src="https://www.youtube.com/iframe_api"></script>
   </head>
 
   <body>
-    <!-- CLICK TO ENTER OVERLAY -->
+    <!-- CLICK TO ENTER -->
     <div id="enterScreen">
       <button id="enterButton">CLICK TO ENTER THE CHANNEL</button>
     </div>
 
-    <!-- Three.js canvas -->
+    <!-- THREE CANVAS -->
     <div id="container3D"></div>
 
-    <!-- Hidden YouTube audio player -->
-    <div id="yt-player" style="display:none;"></div>
+    <!-- UPLOAD PANEL -->
+    <div id="uploadPanel">
+      <label>
+        Upload Image:
+        <input type="file" id="imageUpload" accept="image/*" />
+      </label>
+    </div>
 
-    <!-- Mute toggle -->
+    <!-- MUTE -->
     <button id="muteButton">🔇 Mute</button>
 
-    <!-- Your Three.js app -->
+    <!-- IMPORT MAP -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js"
+        }
+      }
+    </script>
+
+    <!-- APP -->
     <script type="module" src="./main.js"></script>
   </body>
 </html>
