@@ -38,11 +38,13 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.physicallyCorrectLights = true;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 7;
 renderer.shadowMap.enabled = true;
-document.getElementById("container3D").appendChild(renderer.domElement);
+
+document
+  .getElementById("container3D")
+  .appendChild(renderer.domElement);
 
 /* ================= HDRI ================= */
 new RGBELoader()
@@ -50,7 +52,6 @@ new RGBELoader()
   .load("studio_small_03_1k.hdr", (hdr) => {
     hdr.mapping = THREE.EquirectangularReflectionMapping;
     scene.environment = hdr;
-    scene.environmentIntensity = 0.15;
   });
 
 /* ================= POST FX ================= */
@@ -82,13 +83,14 @@ scene.add(rimLight);
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
-// Ambience
 const ambience = new THREE.Audio(listener);
-const ambienceGain = ambience.gain;
-ambienceGain.gain.value = 0;
-
-// Static noise
 const noiseAudio = new THREE.Audio(listener);
+
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load("./audio/horror-ambience.mp3", (buffer) => {
+  ambience.setBuffer(buffer);
+  ambience.setLoop(true);
+});
 
 function createWhiteNoiseBuffer(duration = 2) {
   const ctx = listener.context;
@@ -100,12 +102,6 @@ function createWhiteNoiseBuffer(duration = 2) {
   return buffer;
 }
 
-const audioLoader = new THREE.AudioLoader();
-audioLoader.load("./audio/horror-ambience.mp3", (buffer) => {
-  ambience.setBuffer(buffer);
-  ambience.setLoop(true);
-});
-
 /* ================= MODEL ================= */
 const loader = new GLTFLoader();
 loader.load("./models/eye.glb", (gltf) => {
@@ -115,17 +111,8 @@ loader.load("./models/eye.glb", (gltf) => {
 
   eye.traverse((obj) => {
     if (!obj.isMesh) return;
-    obj.castShadow = true;
-    obj.receiveShadow = true;
-
     const n = obj.name.toLowerCase();
     if (n.includes("iris")) irisMeshes.push(obj);
-    if (n.includes("eyelid")) {
-      obj.material = obj.material.clone();
-      obj.material.transparent = true;
-      obj.material.depthWrite = false;
-      obj.renderOrder = 1;
-    }
   });
 
   if (gltf.animations.length) {
@@ -135,50 +122,7 @@ loader.load("./models/eye.glb", (gltf) => {
   }
 });
 
-/* ================= IMAGE COLOR ================= */
-function extractColorsFromImage(img, count = 12) {
-  const c = document.createElement("canvas");
-  const ctx = c.getContext("2d");
-  c.width = img.width;
-  c.height = img.height;
-  ctx.drawImage(img, 0, 0);
-  const d = ctx.getImageData(0, 0, c.width, c.height).data;
-  return Array.from({ length: count }, () => {
-    const i = Math.floor(Math.random() * (d.length / 4)) * 4;
-    return new THREE.Color(d[i] / 255, d[i + 1] / 255, d[i + 2] / 255);
-  });
-}
-
-function applyRandomIrisColors(palette) {
-  irisMeshes.forEach((m) => {
-    m.material = m.material.clone();
-    m.material.color.copy(palette[Math.floor(Math.random() * palette.length)]);
-  });
-}
-
-/* ================= GUI ================= */
-const gui = new GUI();
-const controls = {
-  uploadImage: () => fileInput.click(),
-  rerollColors: () =>
-    currentPalette.length && applyRandomIrisColors(currentPalette),
-};
-gui.add(controls, "uploadImage");
-gui.add(controls, "rerollColors");
-
-const fileInput = document.createElement("input");
-fileInput.type = "file";
-fileInput.accept = "image/*";
-fileInput.onchange = (e) => {
-  const img = new Image();
-  img.onload = () => {
-    currentPalette = extractColorsFromImage(img);
-    applyRandomIrisColors(currentPalette);
-  };
-  img.src = URL.createObjectURL(e.target.files[0]);
-};
-
-/* ================= CLICK TO ENTER ================= */
+/* ================= CLICK TO ENTER (FIXED) ================= */
 document.getElementById("enterButton").addEventListener("click", () => {
   if (hasEntered) return;
   hasEntered = true;
@@ -186,28 +130,25 @@ document.getElementById("enterButton").addEventListener("click", () => {
   document.getElementById("enterScreen").classList.add("hidden");
 
   const ctx = listener.context;
+  ctx.resume(); // MUST be synchronous
+
   const t = ctx.currentTime;
 
-  ctx.resume().then(() => {
-    // Ambience
-    ambience.play();
-    ambienceGain.gain.setValueAtTime(0, t);
-    ambienceGain.gain.linearRampToValueAtTime(0.18, t + 5);
+  ambience.play();
+  ambience.gain.gain.setValueAtTime(0, t);
+  ambience.gain.gain.linearRampToValueAtTime(0.18, t + 5);
 
-    // Static (NO POP)
-    noiseAudio.setBuffer(createWhiteNoiseBuffer());
-    noiseAudio.setLoop(true);
-    noiseAudio.play();
-    noiseAudio.gain.gain.setValueAtTime(0, t);
-    noiseAudio.gain.gain.linearRampToValueAtTime(0.0005, t + 0.4);
-    noiseAudio.gain.gain.linearRampToValueAtTime(0.001, t + 1.2);
-  });
+  noiseAudio.setBuffer(createWhiteNoiseBuffer());
+  noiseAudio.setLoop(true);
+  noiseAudio.play();
+  noiseAudio.gain.gain.setValueAtTime(0, t);
+  noiseAudio.gain.gain.linearRampToValueAtTime(0.001, t + 1);
 });
 
 /* ================= MUTE ================= */
 document.getElementById("muteButton").onclick = () => {
   isMuted = !isMuted;
-  ambienceGain.gain.value = isMuted ? 0 : 0.18;
+  ambience.gain.gain.value = isMuted ? 0 : 0.18;
   noiseAudio.gain.gain.value = isMuted ? 0 : 0.001;
 };
 
