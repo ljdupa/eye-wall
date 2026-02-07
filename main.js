@@ -7,6 +7,7 @@ import { FilmPass } from "https://unpkg.com/three@0.129.0/examples/jsm/postproce
 import { ShaderPass } from "https://unpkg.com/three@0.129.0/examples/jsm/postprocessing/ShaderPass.js";
 import { VignetteShader } from "https://unpkg.com/three@0.129.0/examples/jsm/shaders/VignetteShader.js";
 import GUI from "https://unpkg.com/lil-gui@0.18/dist/lil-gui.esm.js";
+alert("🚨 NEW main.js IS RUNNING");
 
 
 /* ================= GLOBALS ================= */
@@ -186,4 +187,5 @@ function animate() {
 }
 
 animate();
+
 
